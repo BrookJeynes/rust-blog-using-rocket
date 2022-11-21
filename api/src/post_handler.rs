@@ -2,7 +2,7 @@ use shared::response_models::{Response, ResponseBody};
 use application::post::{create, read, publish, delete};
 use domain::models::NewPost;
 use rocket::{get, post};
-use rocket::response::status::{NotFound, Created, NoContent};
+use rocket::response::status::{NotFound, Created};
 use rocket::serde::json::Json;
 
 #[get("/")]
@@ -38,6 +38,10 @@ pub fn create_post_handler(post: Json<NewPost>) -> Created<String> {
 }
 
 #[get("/delete/<post_id>")]
-pub fn delete_post_handler(post_id: i32) -> Result<NoContent, NotFound<String>> {
-    delete::delete_post(post_id)
+pub fn delete_post_handler(post_id: i32) -> Result<String, NotFound<String>> {
+    let posts = delete::delete_post(post_id)?;
+
+    let response = Response { body: ResponseBody::Posts(posts) };
+
+    Ok(serde_json::to_string(&response).unwrap())
 }

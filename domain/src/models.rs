@@ -8,6 +8,7 @@ pub struct Post {
     pub id: i32,
     pub title: String,
     pub body: String,
+    pub genre: String,
     pub published: bool,
 }
 
@@ -17,4 +18,5 @@ pub struct Post {
 pub struct NewPost<'a> {
     pub title: &'a str,
     pub body: &'a str,
+    pub genre: &'a str,
 }
