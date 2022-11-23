@@ -3,7 +3,7 @@ use diesel::prelude::*;
 use rocket::serde::{Deserialize, Serialize};
 use std::cmp::{Ord, Eq, PartialOrd, PartialEq};
 
-#[derive(Debug, Queryable, Serialize, Ord, Eq, PartialEq, PartialOrd)]
+#[derive(Queryable, Serialize, Ord, Eq, PartialEq, PartialOrd)]
 pub struct Post {
     pub id: i32,
     pub title: String,
@@ -12,7 +12,7 @@ pub struct Post {
     pub published: bool,
 }
 
-#[derive(Debug, Insertable, Queryable, Deserialize)]
+#[derive(Insertable, Deserialize)]
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = posts)]
 pub struct NewPost<'a> {
