@@ -1,13 +1,14 @@
 use domain::models::Post;
-use shared::response_models::{Response, ResponseBody};
+use shared::response_models::{Response, ResponseBody, NetworkResponse::{self, NotFound}};
 use infrastructure::establish_connection;
-use rocket::response::status::NotFound;
 use diesel::prelude::*;
 
-pub fn publish_post(post_id: i32) -> Result<Post, NotFound<String>> {
+use crate::auth::JWT;
+
+pub fn publish_post(post_id: i32, key: JWT) -> Result<Post, NetworkResponse> {
     use domain::schema::posts::dsl::*;
 
-    match diesel::update(posts.find(post_id)).set(published.eq(true)).get_result::<Post>(&mut establish_connection()) {
+    match diesel::update(posts.find(post_id)).set(published.eq(true)).filter(user_id.eq(key.claims.subject_id)).get_result::<Post>(&mut establish_connection()) {
         Ok(post) => Ok(post),
         Err(err) => match err {
             diesel::result::Error::NotFound => {

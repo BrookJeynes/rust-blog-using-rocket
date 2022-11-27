@@ -1,10 +1,9 @@
 use domain::models::Post;
-use shared::response_models::{Response, ResponseBody};
+use shared::response_models::{Response, ResponseBody, NetworkResponse::{self, NotFound}};
 use infrastructure::establish_connection;
 use diesel::prelude::*;
-use rocket::response::status::NotFound;
 
-pub fn list_post(post_id: i32) -> Result<Post, NotFound<String>> {
+pub fn list_post(post_id: i32) -> Result<Post, NetworkResponse> {
     use domain::schema::posts;
 
     match posts::table.find(post_id).first::<Post>(&mut establish_connection()) {
